@@ -6,7 +6,6 @@
 		<artifactId>drugorderexport</artifactId>
 		<version>0.5.4-SNAPSHOT</version>
 	</parent>
-	<groupId>org.openmrs.module</groupId>
 	<artifactId>drugorderexport-omod</artifactId>
 	<packaging>jar</packaging>
 	<name>HIV Drugs Reporting OMOD</name>
