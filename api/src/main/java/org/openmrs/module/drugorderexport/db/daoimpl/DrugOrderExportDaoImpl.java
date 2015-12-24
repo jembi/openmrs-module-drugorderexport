@@ -1058,7 +1058,7 @@ public class DrugOrderExportDaoImpl implements DrugOrderExportDao {
 		List<Integer> regimenDrugs = new ArrayList<Integer>();
 
 		for (RegimenComponent rc : components) {
-			if (!rc.getDrugOrder().getDiscontinued() && (rc.getDrugOrder().getStartDate()!=null && rc.getDrugOrder().getStartDate().getTime()<= enddate.getTime())){
+			if (rc.getDrugOrder().isActive() && (rc.getDrugOrder().getEffectiveStartDate()!=null && rc.getDrugOrder().getEffectiveStartDate().getTime()<= enddate.getTime())){
 			if(rc.getDrug()!=null)
 				regimenDrugs.add(rc.getDrug().getConcept().getConceptId());
 				else
@@ -2740,7 +2740,7 @@ public class DrugOrderExportDaoImpl implements DrugOrderExportDao {
 				List<Integer> regimenDrugs = new ArrayList<Integer>();
 				
 				for (RegimenComponent rc : components) {
-					if (!rc.getDrugOrder().getDiscontinued())
+					if (rc.getDrugOrder().isActive())
                          if(rc.getDrug()!=null)
 						regimenDrugs.add(rc.getDrug().getConcept().getConceptId());
 //					regimenDrugs.add(rc.getGeneric().getConceptId());
