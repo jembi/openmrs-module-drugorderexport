@@ -15,22 +15,18 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import javax.swing.text.html.HTMLDocument.HTMLReader.PreAction;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.SQLQuery;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.openmrs.Concept;
 import org.openmrs.Drug;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
+import org.openmrs.api.db.hibernate.DbSession;
+import org.openmrs.api.db.hibernate.DbSessionFactory;
 import org.openmrs.module.drugorderexport.DrugOrderExportUtil;
 import org.openmrs.module.drugorderexport.db.dao.DrugOrderExportDao;
 import org.openmrs.module.drugorderexport.service.DrugOrderService;
-
-  
 import org.openmrs.module.regimenhistory.Regimen;
 import org.openmrs.module.regimenhistory.RegimenComponent;
 import org.openmrs.module.regimenhistory.RegimenUtils;
@@ -41,7 +37,7 @@ public class DrugOrderExportDaoImpl implements DrugOrderExportDao {
 	/** Logger for this class and subclasses */
 	protected final Log log = LogFactory.getLog(getClass());
 	
-	private SessionFactory sessionFactory;
+	private DbSessionFactory sessionFactory;
 	
 	
 	
@@ -50,7 +46,7 @@ public class DrugOrderExportDaoImpl implements DrugOrderExportDao {
 	/**
 	 * @param sessionFactory the sessionFactory to set
 	 */
-	public void setSessionFactory(SessionFactory sessionFactory) {
+	public void setSessionFactory(DbSessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
 	}
 	
@@ -58,7 +54,7 @@ public class DrugOrderExportDaoImpl implements DrugOrderExportDao {
 	/**
 	 * @return the sessionFactory
 	 */
-	public SessionFactory getSessionFactory() {
+	public DbSessionFactory getSessionFactory() {
 		return sessionFactory;
 	}
 	
@@ -129,7 +125,7 @@ public class DrugOrderExportDaoImpl implements DrugOrderExportDao {
 	public List<Integer> getActivePatients(List<Integer> patients, Date endDate) {
 		List<Integer> activePatients = new ArrayList<Integer>();
 		
-		Session session = getSessionFactory().getCurrentSession();
+		DbSession session = getSessionFactory().getCurrentSession();
 		
 		
 		if (endDate == null) {
@@ -459,7 +455,7 @@ public class DrugOrderExportDaoImpl implements DrugOrderExportDao {
 	 */
 	@Override
 	public Concept getConceptById(int conceptId) {
-		Session session = getSessionFactory().getCurrentSession();
+		DbSession session = getSessionFactory().getCurrentSession();
 		return (Concept) session.load(Concept.class, conceptId);
 	}
 	
@@ -469,7 +465,7 @@ public class DrugOrderExportDaoImpl implements DrugOrderExportDao {
 	 */
 	@Override
 	public Drug getDrugById(int drugId) {
-		Session session = getSessionFactory().getCurrentSession();
+		DbSession session = getSessionFactory().getCurrentSession();
 		return (Drug) session.load(Drug.class, drugId);
 	}
 	
@@ -677,7 +673,7 @@ public class DrugOrderExportDaoImpl implements DrugOrderExportDao {
 	 */
 	@Override
 	public Double getPatientObsValue(Patient patient, Concept concept, Date obsStartDate, Date obsEndDate) {
-		Session session = sessionFactory.getCurrentSession();
+		DbSession session = sessionFactory.getCurrentSession();
 		
 		// if patient has been tested in the period:
 		// search all dates when he has been tested
@@ -973,7 +969,7 @@ public class DrugOrderExportDaoImpl implements DrugOrderExportDao {
 		
 		if(endDate==null)
 			endDate=new Date();
-			Session session = sessionFactory.getCurrentSession();
+			DbSession session = sessionFactory.getCurrentSession();
 			
 			SQLQuery patientsExitedFromCare = session.createSQLQuery("SELECT distinct pa.patient_id FROM patient pa "
 			        + "INNER JOIN person pe ON pa.patient_id = pe.person_id "
@@ -1473,7 +1469,7 @@ public class DrugOrderExportDaoImpl implements DrugOrderExportDao {
 	@Override
 	public Date getWhenPatientStarted(Patient patient) {
 		SQLQuery query = null;
-		Session session = sessionFactory.getCurrentSession();
+		DbSession session = sessionFactory.getCurrentSession();
 		
 		StringBuffer strbuf = new StringBuffer();
 		
@@ -2347,7 +2343,7 @@ public class DrugOrderExportDaoImpl implements DrugOrderExportDao {
 	//==========================================================================================================================================
 	
 	public Date getTreeMonthBefore(Date date) {
-		Session session = getSessionFactory().getCurrentSession();
+		DbSession session = getSessionFactory().getCurrentSession();
 		SQLQuery query = session.createSQLQuery("SELECT DATE_SUB(CAST('" + getDateFormated(date)
 		        + "' AS DATE), INTERVAL 3 MONTH)");
 		
@@ -2424,7 +2420,7 @@ public class DrugOrderExportDaoImpl implements DrugOrderExportDao {
 	 */
 	@Override
 	public Date getPatientLastEncounterDate(Integer patientId) {
-		Session session = getSessionFactory().getCurrentSession();
+		DbSession session = getSessionFactory().getCurrentSession();
 		SQLQuery query = session
 		        .createSQLQuery("SELECT cast(max(encounter_datetime) as DATE ) FROM encounter where patient_id = "
 		                + patientId);
@@ -2437,7 +2433,7 @@ public class DrugOrderExportDaoImpl implements DrugOrderExportDao {
 	 */
 	@Override
 	public Date getPatientLastVisitDate(Integer patientId) {
-		Session session = getSessionFactory().getCurrentSession();
+		DbSession session = getSessionFactory().getCurrentSession();
 		SQLQuery query = session
 		        .createSQLQuery("SELECT cast(max(value_datetime) as DATE ) FROM obs where concept_id=5096 and person_id = "
 		                + patientId);
@@ -2453,7 +2449,7 @@ public class DrugOrderExportDaoImpl implements DrugOrderExportDao {
 	@Override
 	public Date getWhenPatStartedXRegimen(Integer patientId, String gpDrugs) {
 		SQLQuery query = null;
-		Session session = sessionFactory.getCurrentSession();
+		DbSession session = sessionFactory.getCurrentSession();
 		
 		StringBuffer strbuf = new StringBuffer();
 		strbuf.append("SELECT cast(min(o.start_date) as DATE ) FROM orders o  ");
@@ -2632,7 +2628,7 @@ public class DrugOrderExportDaoImpl implements DrugOrderExportDao {
 	//==========================================================================================================================================
 	@Override
 	public Drug getDrugByConceptId(int conceptId) {
-//		Session session = getSessionFactory().getCurrentSession();
+//		DbSession session = getSessionFactory().getCurrentSession();
 //		return (Drug) session.load(Drug.class, conceptId);
 		
 		Concept c = Context.getConceptService().getConcept(conceptId);
@@ -3082,7 +3078,7 @@ public class DrugOrderExportDaoImpl implements DrugOrderExportDao {
 	 //==========================================================================================================================================
 	@Override
 	public List<Integer> getActiveOnDrugsPatients(List<Integer> patients,String list,Date endDate) {
-		Session session = getSessionFactory().getCurrentSession();
+		DbSession session = getSessionFactory().getCurrentSession();
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 		SQLQuery query =null;
 		
