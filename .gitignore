@@ -1,3 +1,4 @@
+
 # Copied from https://github.com/github/gitignore
 
 ### IntelliJ Idea ###
@@ -77,3 +78,5 @@ omod/target
 api/target
 api/.classpath
 omod/.classpath
+omod/.gitignore
+api/.gitignore
